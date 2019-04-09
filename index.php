@@ -17,8 +17,6 @@ include 'func/curl_func.php';
 		$userID = $_GET['user'];
 	} else {
 		$isUserView = false;
-		// $decksStat['id'] = ['name'=>'', 'user_id'=>'', 'win'=>0, 'loss'=>0, 'draw'=>0]; and total (cal from win+loss+draw)
-		// $cardsStat['id'] = ['name'=>'', 'win'=>0, 'loss'=>0, 'draw'=>0]; // and total (cal from win+loss+draw)
 	}
 	$decksStat = [];
 
@@ -70,10 +68,10 @@ include 'func/curl_func.php';
 				$decksStat[$player1]['loss']++;
 				$decksStat[$player2]['win']++;
 			}
-			// echo "-------------------<End Game>--------------------<br>";
 		}
 	}
 
+	// Calculate User Winrate 
 	$userWinrate = [];
 	foreach ($decksStat as $key => $itemDeck) {
 		$userID = explode(':', $key)[0];
@@ -84,7 +82,6 @@ include 'func/curl_func.php';
 		$userWinrate[$userID]['loss'] += $itemDeck['loss'];
 		$userWinrate[$userID]['draw'] += $itemDeck['draw'];
 	}
-
 
 ?>
 
@@ -99,10 +96,12 @@ include 'func/curl_func.php';
 <body>
 	<?php
 		if (count($decksStat) > 0) {
-			echo "<table align='center'>";
-			// echo "<tr><th class='bolder'>Eng Name</th><th class='bolder'>Section</th></tr>";
-			// echo "<tr> <th>USER_ID:Deck ID</th> <th>Deck ID</th> <th>Deck Name</th> <th>Win</th> <th>Loss</th> <th>Draw</th> <th>Total</th> </tr>";
-			echo "<tr> <th>USER_ID</th> <th>Win</th> <th>Loss</th> <th>Draw</th> <th>Total</th> </tr>";
+			echo "<table id='summary' align='center'>";
+			echo "<tr> <th onclick='sortTable(0);' class='clickable'>USER_ID</th>";
+			echo "<th onclick='sortTable(1);' class='clickable'>Win</th>";
+			echo "<th onclick='sortTable(2);' class='clickable'>Loss</th>";
+			echo "<th onclick='sortTable(3);' class='clickable'>Draw</th>";
+			echo "<th onclick='sortTable(4);' class='clickable'>Total</th> </tr>";
 			foreach ($userWinrate as $key => $itemDeck) {
 				echo "<tr>";
 				echo "<td>".$key."</td>";
@@ -113,7 +112,7 @@ include 'func/curl_func.php';
 				echo "<td>".number_format($itemDeck['loss']/$total*100, 2)." %</td>";
 				echo "<td>".number_format($itemDeck['draw']/$total*100, 2)." %</td>";
 				echo "<td>$total</td>";
-				echo "<tr>";
+				echo "</tr>";
 			}
 
 		} else {
@@ -121,5 +120,56 @@ include 'func/curl_func.php';
 			die();
 		}
 	?>
+
+	<script>
+	var increse = false;
+	var last_index = -1;
+
+	function sortTable(index) {
+		if (index == last_index) {
+	  	increse = !increse;
+	  } else {
+	  	increse = true;
+	  }
+	  var table, rows, switching, i, x, y, shouldSwitch;
+	  table = document.getElementById("summary");
+	  switching = true;
+	  /*Make a loop that will continue until
+	  no switching has been done:*/
+	  while (switching) {
+	    //start by saying: no switching is done:
+	    switching = false;
+	    rows = table.rows;
+	    /*Loop through all table rows (except the
+	    first, which contains table headers):*/
+	    for (i = 1; i < (rows.length - 1); i++) {
+	      //start by saying there should be no switching:
+	      shouldSwitch = false;
+	      /*Get the two elements you want to compare,
+	      one from current row and one from the next:*/
+	      x = rows[i].getElementsByTagName("TD")[index];
+	      y = rows[i + 1].getElementsByTagName("TD")[index];
+	      //check if the two rows should switch place:
+	      if (increse && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+	        //if so, mark as a switch and break the loop:
+	        shouldSwitch = true;
+	        break;
+	      }
+	      if (!increse && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+	        //if so, mark as a switch and break the loop:
+	        shouldSwitch = true;
+	        break;
+	      }
+	    }
+	    if (shouldSwitch) {
+	      /*If a switch has been marked, make the switch
+	      and mark that a switch has been done:*/
+	      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+	      switching = true;
+	    }
+	  }
+	  last_index = index;
+	}
+	</script>
 </body>
 </html>
