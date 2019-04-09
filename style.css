@@ -1,0 +1,30 @@
+body {
+	animation: chg_color 10s infinite linear;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+table {
+	width: 800px;
+	background-color: white;
+	margin-top: 50px;
+  	border-spacing: 5px;
+}
+th, td {
+	padding: 10px;
+}
+.bolder {
+	font-weight: bolder;
+	font-size: 24px;
+}
+
+@keyframes chg_color {
+	0% {background-color: hsl(0, 100%, 95%);}
+	17% {background-color: hsl(60, 100%, 95%);}
+	33% {background-color: hsl(120, 100%, 95%);}
+	50% {background-color: hsl(180, 100%, 95%);}
+	67% {background-color: hsl(240, 100%, 95%);}
+	83% {background-color: hsl(300, 100%, 95%);}
+	100% {background-color: hsl(360, 100%, 95%);}
+}
