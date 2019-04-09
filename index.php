@@ -108,10 +108,11 @@ include 'func/curl_func.php';
 				echo "<td>".$key."</td>";
 				// echo "<td>".$itemDeck['id']."</td>";
 				// echo "<td>".$itemDeck['name']."</td>";
-				echo "<td>".$itemDeck['win']."</td>";
-				echo "<td>".$itemDeck['loss']."</td>";
-				echo "<td>".$itemDeck['draw']."</td>";
-				echo "<td>".($itemDeck['win']+$itemDeck['loss']+$itemDeck['draw'])."</td>";
+				$total = $itemDeck['win']+$itemDeck['loss']+$itemDeck['draw'];
+				echo "<td>".number_format($itemDeck['win']/$total*100, 2)." %</td>";
+				echo "<td>".number_format($itemDeck['loss']/$total*100, 2)." %</td>";
+				echo "<td>".number_format($itemDeck['draw']/$total*100, 2)." %</td>";
+				echo "<td>$total</td>";
 				echo "<tr>";
 			}
 
