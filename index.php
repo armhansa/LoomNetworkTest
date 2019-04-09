@@ -44,32 +44,37 @@ include 'func/curl_func.php';
 	for ($i=1; $i<=$pages; $i++) {
 		$jsonMatchesPage = getJson("$urlMatches?page=$i");
 		foreach ($jsonMatchesPage['matches'] as $match) {
-			$player[] = [$match['player1_id'], $match['player1_deck_id']];
-			$player[] = [$match['player2_id'], $match['player2_deck_id']];
+			echo $player1 = $match['player1_id'].":".$match['player1_deck_id'];
+			echo "<br>";
+			echo $player2 = $match['player2_id'].":".$match['player2_deck_id'];
+			echo "<br>";
 			// dict created
-			if (!array_key_exists($player[0][0].":".$player[0][1], $decksStat)) {
-				$decksStat[$player[0][0].":".$player[0][1]] = [
+			if (!array_key_exists($player1, $decksStat)) {
+				echo "Create ".$player1."<br>";
+				$decksStat[$player1] = [
 					'win'=>0
 					, 'loss'=>0
 					, 'draw'=>0];
 			}
-			if (!array_key_exists($player[1][0].":".$player[1][1], $decksStat)) {
-				$decksStat[$player[1][0].":".$player[1][1]] = [
+			if (!array_key_exists($player2, $decksStat)) {
+				echo "Create ".$player2."<br>";
+				$decksStat[$player2] = [
 					'win'=>0
 					, 'loss'=>0
 					, 'draw'=>0];
 			}
 			// Cal Stat
 			if ($match['winner_id'] == "") {
-				$decksStat[$player[0][0].":".$player[0][1]]['draw']++;
-				$decksStat[$player[1][0].":".$player[1][1]]['draw']++;
-			} else if ($match['winner_id'] == $player[0][0]) {
-				$decksStat[$player[0][0].":".$player[0][1]]['win']++;
-				$decksStat[$player[1][0].":".$player[1][1]]['loss']++;
+				$decksStat[$player1]['draw']++;
+				$decksStat[$player2]['draw']++;
+			} else if ($match['winner_id'] == $match['player1_id']) {
+				$decksStat[$player1]['win']++;
+				$decksStat[$player2]['loss']++;
 			} else {
-				$decksStat[$player[0][0].":".$player[0][1]]['loss']++;
-				$decksStat[$player[1][0].":".$player[1][1]]['win']++;
+				$decksStat[$player1]['loss']++;
+				$decksStat[$player2]['win']++;
 			}
+			echo "-------------------<End Game>--------------------<br>";
 		}
 	}
 
@@ -106,8 +111,6 @@ include 'func/curl_func.php';
 			echo "Error Decks in Database is not availiable!";
 			die();
 		}
-
-		print_r($decksStat);
 	?>
 </body>
 </html>
