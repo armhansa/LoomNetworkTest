@@ -44,20 +44,16 @@ include 'func/curl_func.php';
 	for ($i=1; $i<=$pages; $i++) {
 		$jsonMatchesPage = getJson("$urlMatches?page=$i");
 		foreach ($jsonMatchesPage['matches'] as $match) {
-			echo $player1 = $match['player1_id'].":".$match['player1_deck_id'];
-			echo "<br>";
-			echo $player2 = $match['player2_id'].":".$match['player2_deck_id'];
-			echo "<br>";
+			$player1 = $match['player1_id'].":".$match['player1_deck_id'];
+			$player2 = $match['player2_id'].":".$match['player2_deck_id'];
 			// dict created
 			if (!array_key_exists($player1, $decksStat)) {
-				echo "Create ".$player1."<br>";
 				$decksStat[$player1] = [
 					'win'=>0
 					, 'loss'=>0
 					, 'draw'=>0];
 			}
 			if (!array_key_exists($player2, $decksStat)) {
-				echo "Create ".$player2."<br>";
 				$decksStat[$player2] = [
 					'win'=>0
 					, 'loss'=>0
@@ -74,9 +70,21 @@ include 'func/curl_func.php';
 				$decksStat[$player1]['loss']++;
 				$decksStat[$player2]['win']++;
 			}
-			echo "-------------------<End Game>--------------------<br>";
+			// echo "-------------------<End Game>--------------------<br>";
 		}
 	}
+
+	$userWinrate = [];
+	foreach ($decksStat as $key => $itemDeck) {
+		$userID = explode(':', $key)[0];
+		if (!array_key_exists($userID, $userWinrate)) {
+			$userWinrate[$userID] = $itemDeck;
+		}
+		$userWinrate[$userID]['win'] += $itemDeck['win'];
+		$userWinrate[$userID]['loss'] += $itemDeck['loss'];
+		$userWinrate[$userID]['draw'] += $itemDeck['draw'];
+	}
+
 
 ?>
 
@@ -94,8 +102,8 @@ include 'func/curl_func.php';
 			echo "<table align='center'>";
 			// echo "<tr><th class='bolder'>Eng Name</th><th class='bolder'>Section</th></tr>";
 			// echo "<tr> <th>USER_ID:Deck ID</th> <th>Deck ID</th> <th>Deck Name</th> <th>Win</th> <th>Loss</th> <th>Draw</th> <th>Total</th> </tr>";
-			echo "<tr> <th>USER_ID:Deck ID</th> <th>Win</th> <th>Loss</th> <th>Draw</th> <th>Total</th> </tr>";
-			foreach ($decksStat as $key => $itemDeck) {
+			echo "<tr> <th>USER_ID</th> <th>Win</th> <th>Loss</th> <th>Draw</th> <th>Total</th> </tr>";
+			foreach ($userWinrate as $key => $itemDeck) {
 				echo "<tr>";
 				echo "<td>".$key."</td>";
 				// echo "<td>".$itemDeck['id']."</td>";
