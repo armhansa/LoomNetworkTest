@@ -90,7 +90,7 @@ include 'func/curl_func.php';
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Cards Statics</title>
+	<title>User Statics</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
